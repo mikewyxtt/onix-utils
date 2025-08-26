@@ -22,6 +22,7 @@ import sys
 import os
 import struct
 import subprocess
+import tempfile
 
 def usage():
     print(f"""Usage: {sys.argv[0]} --root <root-task> --initramfs <initramfs> <output>
@@ -62,9 +63,10 @@ def main():
     blob = magic + length_field + initramfs
 
     # Write blob to temporary file
-    blob_path = "initramfs_blob.bin"
-    with open(blob_path, "wb") as f:
-        f.write(blob)
+    with tempfile.NamedTemporaryFile(delete=False) as tmp_blob:
+        tmp_blob.write(blob)
+        blob_path = tmp_blob.name
+
 
     # Inject blob into .initramfs section using objcopy
     try:
@@ -77,6 +79,9 @@ def main():
         ], check=True)
     except subprocess.CalledProcessError as e:
         sys.stderr.write(f"Error: objcopy failed with exit code {e.returncode}")
+    
+    # Clean up temporary files
+    os.remove(blob_path)
 
     print(f"✅ Patched ELF written to: {output_elf}")
 
