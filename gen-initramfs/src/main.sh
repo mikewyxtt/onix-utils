@@ -52,7 +52,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# If anything left after the output filename → too many args
+# If there is anything left after the output filename, there are too many args
 if [[ $# -gt 0 ]]; then
     echo "ERROR: Too many arguments: $*" >&2
     usage
