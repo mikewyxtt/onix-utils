@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 #  Copyright (C) 2025  Mike Wyatt <mikewyxtt@gmail.com>
 #
