@@ -19,7 +19,7 @@
 set -e
 
 usage() {
-    echo "Usage: $0 [--sys-dir <path>]"
+    echo "Usage: $0 [--sys-dir <path>] <output-file>"
     echo
     echo "Options:"
     echo "  --sys-dir <path>   Path to system directory (default: /onix)"
@@ -31,26 +31,42 @@ usage() {
 # Path to ONIX system files. Default is /onix
 sys_dir=/onix
 while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --sys-dir)
-      sys_dir="$2"
-      shift 2
-      ;;
-    --help)
-      usage
-      exit 0
-      ;;
-    *)
-      echo "Unknown option: $1" >&2
-      usage
-      exit 1
-      ;;
-  esac
+    case "$1" in
+        --sys-dir)
+            [[ -n "$2" && ! "$2" =~ ^-- ]] || usage
+            sys_dir="$2"
+            shift 2
+            ;;
+        --help)
+            usage
+            ;;
+        --*)
+            echo "ERROR: Unknown option: $1" >&2
+            usage
+            ;;
+        *)
+            output_file="$1"
+            shift
+            break
+            ;;
+    esac
 done
+
+# If anything left after the output filename → too many args
+if [[ $# -gt 0 ]]; then
+    echo "ERROR: Too many arguments: $*" >&2
+    usage
+fi
+
+# Require output filename
+if [[ -z "$output_file" ]]; then
+    echo "ERROR: No output filename specified"
+    usage
+fi
 
 # Check that the extensions root directory exists
 if [ ! -d "${sys_dir}" ]; then
-    echo "ERROR: Extensions root directory '${sys_dir}' does not exist!"
+    echo "ERROR: '${sys_dir}' does not exist!"
     exit 1
 fi
 
