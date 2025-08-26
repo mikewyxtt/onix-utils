@@ -19,23 +19,51 @@
 
 set -e
 
-# Path to ONIX system files
-ONIX_SYS=${$1:-"/onix"}
+usage() {
+    echo "Usage: $0 [--sys-dir <path>]"
+    echo
+    echo "Options:"
+    echo "  --sys-dir <path>   Path to system directory (default: /onix)"
+    echo "  --help             Display this message"
+    echo
+    exit 1
+}
 
-if [ ! -d "${ONIX_SYS}" ]; then
-    echo "ERROR: Extensions root directory '${ONIX_SYS}' does not exist!"
+# Path to ONIX system files. Default is /onix
+sys_dir=/onix
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --sys-dir)
+      sys_dir="$2"
+      shift 2
+      ;;
+    --help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+# Check that the extensions root directory exists
+if [ ! -d "${sys_dir}" ]; then
+    echo "ERROR: Extensions root directory '${sys_dir}' does not exist!"
     exit 1
 fi
 
 # Files to be included in the initramfs
 INITRAMFS_MEMBERS=(
-    "${ONIX_SYS}/ss/pm"         # Process Manager
+    "${sys_dir}/ss/pm"         # Process Manager
 
 ## TODO: Add these once they are implemented
-#    "${ONIX_SYS}/ss/mm",        # Memory Manager
-#    "${ONIX_SYS}/ss/vfs",       # Virtual File System
-#    "${ONIX_SYS}/ss/sched",     # Scheduler
-#    "${ONIX_SYS}/dd/acpi",      # ACPI
+#    "${sys_dir}/ss/mm",        # Memory Manager
+#    "${sys_dir}/ss/vfs",       # Virtual File System
+#    "${sys_dir}/ss/sched",     # Scheduler
+#    "${sys_dir}/dd/acpi",      # ACPI
 #   
 )
 
