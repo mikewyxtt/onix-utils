@@ -17,27 +17,31 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import argparse
 import sys
 import os
 import struct
 import subprocess
 
 def usage():
-    print(f"""Usage: {sys.argv[0]} <root-task> <initramfs> <payload>
+    print(f"""Usage: {sys.argv[0]} --root <root-task> --initramfs <initramfs> <output>
 
-  <root-task>       Path to the root task binary
-  <initramfs>       Path to the initramfs
-  <payload>         Where to write the payload
+  --root            Path to the root task binary
+  --initramfs       Path to the initramfs
+  <output>          Path to the output file
 """, file=sys.stderr)
 
 def main():
-    if len(sys.argv) < 4 or len(sys.argv) > 4:
-        usage()
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Patch ELF with initramfs blob")
+    parser.add_argument("--root", required=True, help="Path to root task binary")
+    parser.add_argument("--initramfs", required=True, help="Path to initramfs archive")
+    parser.add_argument("output", help="Output filename for patched ELF")
 
-    root_elf = sys.argv[1]
-    initramfs = sys.argv[2]
-    output_elf = sys.argv[3]
+    args = parser.parse_args()
+
+    root_elf = args.root
+    initramfs_path = args.initramfs
+    output_elf = args.output
 
     if not os.path.isfile(root_elf):
         sys.stderr.write(f"Error: ELF not found: {root_elf}\n")
