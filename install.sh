@@ -8,5 +8,5 @@ export DESTDIR="${1:-/usr/sbin}"
 TGTS=$(find . -name install.sh)
 
 for tgt in $TGTS; do
-    $tgt
+    (cd $(dirname $tgt) && $tgt)
 done
