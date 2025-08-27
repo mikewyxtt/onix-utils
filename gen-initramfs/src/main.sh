@@ -83,7 +83,6 @@ INITRAMFS_MEMBERS=(
 )
 
 INITRAMFS_TMP_DIR=$(mktemp -d /tmp/initramfs.XXXXXX)
-OUTPUT_FILE=$1
 
 for m in ${INITRAMFS_MEMBERS[@]}; do
     cp -v ${m} ${INITRAMFS_TMP_DIR}
@@ -93,6 +92,6 @@ done
 (
     cd ${INITRAMFS_TMP_DIR}
     find . | cpio -o -H newc
-) > ${OUTPUT_FILE}
+) > ${output_file}
 
 rm -rf ${INITRAMFS_TMP_DIR}
