@@ -5,7 +5,7 @@ set -e
 
 export DESTDIR="${1:-/usr/sbin}"
 
-TGTS=$(find . -name install.sh -exec realpath {} \;)
+TGTS=$(find . -name install.sh ! -samefile $(realpath $0) -exec realpath {} \;  | uniq)
 
 for tgt in $TGTS; do
     (cd $(dirname $tgt) && $tgt)
