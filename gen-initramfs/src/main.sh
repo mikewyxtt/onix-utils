@@ -84,14 +84,14 @@ INITRAMFS_MEMBERS=(
 
 INITRAMFS_TMP_DIR=$(mktemp -d /tmp/initramfs.XXXXXX)
 
-for m in ${INITRAMFS_MEMBERS[@]}; do
-    cp -v ${m} ${INITRAMFS_TMP_DIR}
+for m in "${INITRAMFS_MEMBERS[@]}"; do
+    cp -v "${m}" "${INITRAMFS_TMP_DIR}"
 done
 
 # Create the initramfs
 (
-    cd ${INITRAMFS_TMP_DIR}
+    cd "${INITRAMFS_TMP_DIR}"
     find . | cpio -o -H newc
-) > ${output_file}
+) > "${output_file}"
 
-rm -rf ${INITRAMFS_TMP_DIR}
+rm -rf "${INITRAMFS_TMP_DIR}"
