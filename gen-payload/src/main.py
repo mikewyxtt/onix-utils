@@ -41,7 +41,7 @@ def main():
     args = parser.parse_args()
 
     root_elf = args.root
-    initramfs_path = args.initramfs
+    initramfs = args.initramfs
     output_elf = args.output
 
     if not os.path.isfile(root_elf):
