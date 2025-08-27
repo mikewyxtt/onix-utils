@@ -90,7 +90,7 @@ done
 
 # Create the initramfs
 (
-    cd "${INITRAMFS_TMP_DIR}"
+    cd "${INITRAMFS_TMP_DIR}" || exit 1
     find . | cpio -o -H newc
 ) > "${output_file}"
 
